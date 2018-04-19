@@ -34,6 +34,18 @@ Vagrant.configure("2") do |config|
     only_on: ["ubuntu", /linux/],
     run: {inline: "echo 'Hi'"}
 
+  # Triggers that run remote scripts on guests that do not exist will fail
+  # However, triggers can be configured to continue if an error is encountered
+  #
+  # warn:       Prints a warning message to the user
+  # run_remote: acts exactly like a Shell Provisioner
+  # on_error:   Defines how the trigger behaves when it encounters an error.
+  #             By default, it will halt, but can be configured to continue on
+  config.trigger.before :up,
+    warn: "I'm going to fail",
+    run_remote: {inline: "echo 'i fail'"},
+    on_error: :continue
+
   config.vm.define "ubuntu" do |m|
     m.vm.box = "bento/ubuntu-16.04"
     m.vm.provision "shell", path: "scripts/psql-setup.sh"
