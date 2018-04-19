@@ -28,7 +28,7 @@ Vagrant.configure("2") do |config|
   # only_on: restricts trigger to guests named `ubuntu`
   #          or guest names that match `linux`
   # run:     Is similar to a shell provisioner, but runs locally
-  #      on the host.
+  #          on the host.
   config.trigger.before :up, :destroy, :halt,
     info: "Hello world",
     only_on: ["ubuntu", /linux/],
