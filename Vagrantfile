@@ -12,7 +12,7 @@ Vagrant.configure("2") do |config|
   #
   # name:       gives the trigger a name to be displayed
   # info:       prints a message to the user
-  # run_remote: acts exacty like a Shell Provisioner
+  # run_remote: acts exactly like a Shell Provisioner
   config.trigger.after :up do |trigger|
     trigger.name = "Gather Information"
     trigger.info =  "Running info gathering script..."
@@ -21,17 +21,19 @@ Vagrant.configure("2") do |config|
                                 "THERE"=>"there."}}
   end
 
-  # Only_on restricts trigger to guests named `ubuntu`
-  # or guest names that match `linux`
+  # Triggers can also be defined as a hash instead of a ruby block
+  # They can also be defined for more than one command or the `:all`
+  # key can be used, if a trigger should run for every Vagrant command
   #
-  # run: Is similar to a shell provisioner, but runs locally
+  # only_on: restricts trigger to guests named `ubuntu`
+  #          or guest names that match `linux`
+  # run:     Is similar to a shell provisioner, but runs locally
   #      on the host.
-  config.trigger.before :up, :destroy, :halt do |trigger|
-    trigger.name = "Greetings"
-    trigger.info = "Hello world"
-    trigger.only_on = ["ubuntu", /linux/]
-    trigger.run = {inline: "echo 'Hi'"}
-  end
+  config.trigger.before :up, :destroy, :halt,
+    name: "Greetings",
+    info: "Hello world",
+    only_on: ["ubuntu", /linux/],
+    run: {inline: "echo 'Hi'"}
 
   config.vm.define "ubuntu" do |m|
     m.vm.box = "bento/ubuntu-16.04"
