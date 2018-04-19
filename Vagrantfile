@@ -8,33 +8,40 @@
 Vagrant.configure("2") do |config|
   config.vm.box = "bento/ubuntu-16.04"
 
+  # Global trigger, runs for every guest
+  #
+  # name:       gives the trigger a name to be displayed
+  # info:       prints a message to the user
+  # run_remote: acts exacty like a Shell Provisioner
   config.trigger.after :up do |trigger|
     trigger.name = "Gather Information"
     trigger.info =  "Running info gathering script..."
     trigger.run_remote = {path: "scripts/info.sh",
                           env: {"HELLO"=>"Hello ",
-                                "THERE"=>"there."},
-                          privileged: false}
+                                "THERE"=>"there."}}
   end
 
+  # Only_on restricts trigger to guests named `ubuntu`
+  # or guest names that match `linux`
+  #
+  # run: Is similar to a shell provisioner, but runs locally
+  #      on the host.
   config.trigger.before :up, :destroy, :halt do |trigger|
     trigger.name = "Greetings"
     trigger.info = "Hello world"
+    trigger.only_on = ["ubuntu", /linux/]
     trigger.run = {inline: "echo 'Hi'"}
   end
 
   config.vm.define "ubuntu" do |m|
     m.vm.box = "bento/ubuntu-16.04"
-    m.vm.provision "shell", inline: <<-SHELL
-    sudo apt-get update
-    sudo apt-get install postgresql postgresql-contrib -y
-    sudo -u postgres createdb test
-    sudo -u postgres psql -c "CREATE TABLE playground ( equip_id serial PRIMARY KEY, type varchar (50) NOT NULL, color varchar (25) NOT NULL, location varchar(25) check (location in ('north', 'south', 'west', 'east', 'northeast', 'southeast', 'southwest', 'northwest')), install_date date);"
-    sudo -u postgres psql -c "INSERT INTO playground (equip_id, type, color, location, install_date) VALUES (1, 'cool', 'green', 'west', 'now');"
-    SHELL
+    m.vm.provision "shell", path: "scripts/psql-setup.sh"
 
-    m.trigger.before :up, warn: "Hello world!", name: "Welcome"
-
+    # Machine scoped trigger (i.e. only runs on this guest)
+    #
+    # warn:     Prints a warning message to the user
+    # on_error: Defines how the trigger behaves when it encounters an error.
+    #           By default, it will halt, but can be configured to continue on
     m.trigger.before :destroy do |trigger|
       trigger.name = "Database Backup"
       trigger.warn = "Backing up local postgresql db before destroy..."
