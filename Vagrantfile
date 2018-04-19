@@ -59,7 +59,7 @@ Vagrant.configure("2") do |config|
       trigger.name = "Database Backup"
       trigger.warn = "Backing up local postgresql db before destroy..."
       trigger.on_error = :continue
-      trigger.run_remote = {inline: "sudo -u postgres pg_dump test > /vagrant/db-backup/dbexport.pgsql"}
+      trigger.run_remote = {inline: "sudo -u postgres pg_dump --table playground > /vagrant/db-backup/dbexport.pgsql"}
     end
   end
 end
