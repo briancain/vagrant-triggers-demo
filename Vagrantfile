@@ -21,7 +21,7 @@ Vagrant.configure("2") do |config|
                                 "THERE"=>"there."}}
   end
 
-  # Triggers can also be defined as a hash instead of a ruby block
+  # Triggers can be defined as a hash instead of a ruby block
   # They can also be defined for more than one command or the `:all`
   # key can be used, if a trigger should run for every Vagrant command
   #
@@ -30,7 +30,6 @@ Vagrant.configure("2") do |config|
   # run:     Is similar to a shell provisioner, but runs locally
   #      on the host.
   config.trigger.before :up, :destroy, :halt,
-    name: "Greetings",
     info: "Hello world",
     only_on: ["ubuntu", /linux/],
     run: {inline: "echo 'Hi'"}
