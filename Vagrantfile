@@ -25,12 +25,13 @@ Vagrant.configure("2") do |config|
   # They can also be defined for more than one command or the `:all`
   # key can be used, if a trigger should run for every Vagrant command
   #
+  # info:    prints a message to the user
   # only_on: restricts trigger to guests named `ubuntu`
   #          or guest names that match `linux`
   # run:     Is similar to a shell provisioner, but runs locally
   #          on the host.
   config.trigger.before :up, :destroy, :halt,
-    info: "Hello world",
+    info: "Hello world!!",
     only_on: ["ubuntu", /linux/],
     run: {inline: "echo 'Hi'"}
 
