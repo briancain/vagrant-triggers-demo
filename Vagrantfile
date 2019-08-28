@@ -6,7 +6,7 @@
 # backwards compatibility). Please don't change it unless you know what
 # you're doing.
 Vagrant.configure("2") do |config|
-  config.vm.box = "bento/ubuntu-16.04"
+  config.vm.box = "hashicorp/bionic64"
 
   # Global trigger, runs for every guest
   #
@@ -48,7 +48,7 @@ Vagrant.configure("2") do |config|
     on_error: :continue
 
   config.vm.define "ubuntu" do |m|
-    m.vm.box = "bento/ubuntu-16.04"
+    m.vm.box = "hashicorp/bionic64"
     m.vm.provision "shell", path: "scripts/psql-setup.sh"
 
     # Machine scoped trigger (i.e. only runs on this guest)
